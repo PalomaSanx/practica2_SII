@@ -59,20 +59,20 @@ public class QTable {
 	}
 	
 	/** Sets a value in an entry of the table: Q(state,action)=value. */
-	public void setQValue(State state, Action action, double value){
-		// If the table contains the state, assigns the value.
-		if (table.containsKey(state))
-			table.get(state).put(action, value);
-		// Otherwise creates the entry for each action and puts the value.
-		else{
-			 table.put(state,new HashMap<Action, Double>());
-			 ArrayList<Action> possibleActions = problem.getPossibleActions(state);
-			 for (Action otheraction: possibleActions)
-				 if (otheraction!=action)
-					table.get(state).put(otheraction, 0.0);			 
-			 table.get(state).put(action, value);
-		}
-	}	
+	 public void setQValue(State state, Action action, double value){
+	    // If the table contains the state, assigns the value.
+	    if (table.containsKey(state))
+	       table.get(state).put(action, value);
+	    // Otherwise creates the entry for each action and puts the value.
+	    else{
+	       table.put(state,new HashMap<Action, Double>());
+	       ArrayList<Action> possibleActions = problem.getPossibleActions(state);
+	       for (Action otheraction: possibleActions)
+	          if (otheraction!=action)
+	             table.get(state).put(otheraction, 0.0); 
+	        table.get(state).put(action, value);
+	    }
+	 }
 	
 	/** Gets the value in an entry of the table, Q(state,action).
 	 *  If the entry does not exist, return 0.*/
