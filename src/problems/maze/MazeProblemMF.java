@@ -75,22 +75,66 @@ public class MazeProblemMF extends MFLearningProblem  implements MazeProblem, Pr
 		//
 		// COMPLETAR
 		// 
-		
+		int posx = mazeState.X();
+		int posy = mazeState.Y();
+
+		// comprobamos que estamos dentro del laberinto
+
+		// queremos movernos a la derecha y en la derecha no tengamos un muro
+		if (posx < maze.size - 1 && maze.cells[posx + 1][posy] != Maze.WALL) {
+			possibleActions.add(MazeAction.RIGHT);
+		}
+
+		// queremos movernos a la izquierda y en la izquierda no tengamos un muro
+		if (posx > 0 && maze.cells[posx - 1][posy] != Maze.WALL) {
+			possibleActions.add(MazeAction.LEFT);
+		}
+
+		// queremos movernos hacia arriba y no tengamos un muro
+		if (posy < maze.size - 1 && maze.cells[posx][posy - 1] != Maze.WALL) {
+			possibleActions.add(MazeAction.UP);
+		}
+
+		// queremos movernos hacia abajo y no tengamos un muro
+		if (posy > 0 && maze.cells[posx][posy + 1] != Maze.WALL) {
+			possibleActions.add(MazeAction.DOWN);
+
+		}
+		// queremos meternos al hueco
+		if (maze.cells[posx][posy] == Maze.HOLE) {
+			possibleActions.add(MazeAction.DIVE);
+
+		}
+
 		// Returns the actions.
 		return possibleActions;
+		
 	}	
 	
 	/** Returns the reward of an state. */	
 	@Override
 	public double getReward(State state){
 		double reward=0;
-		
+		MazeState mazestate = (MazeState)state;
+		int posx = mazestate.X();
+		int posy = mazestate.Y();
+		//
 		//
 		// COMPLETAR
 		// 
 		
-		// Otherwise returns 0
-		return 0;
+		//devolvemos la recompensa si es gato=-100 y si es queso=100 (estados finales).
+				if(maze.cells[posx][posy]==Maze.CAT) {
+					reward=-100;
+					return reward;
+				}
+				if(maze.cells[posx][posy]==Maze.CHEESE) {
+					reward=100;
+					return reward;
+				}
+				// Otherwise returns 0
+				return reward;
+	
 	}	
 	
 	/**  In this case, the transition reward penalizes distance. */	
@@ -104,7 +148,31 @@ public class MazeProblemMF extends MFLearningProblem  implements MazeProblem, Pr
 		// 
 		
 		// Returns the reward
-		return reward;
+		
+		MazeState mazeState_fromStat = (MazeState)fromState;
+		MazeAction mazeAction = (MazeAction)action;
+		MazeState mazeState_toState = (MazeState)toState;
+		int posx_f = mazeState_fromStat.X();
+		int posy_f = mazeState_fromStat.Y();
+		int posx_to = mazeState_toState.X();
+		int posy_to = mazeState_toState.Y();
+		double dist_eucli = 0;
+		
+		//calculo distancia euclidea
+		
+		dist_eucli = Math.sqrt(Math.pow((posx_to-posx_f), 2)+Math.pow((posy_to-posy_f), 2));
+		reward=  (-1*dist_eucli);
+		
+		if(mazeAction.equals(Maze.HOLE)) { 
+			reward=reward/2;
+			return reward;
+		}
+		if (maze.cells[posx_f][posy_f]==Maze.WATER) {
+			reward = reward*2;
+			return reward;
+		}
+		
+		return reward; 
 	}	
 	
 	// From MFLearningProblem

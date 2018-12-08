@@ -86,7 +86,7 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 		int posx = mazeState.X();
 		int posy = mazeState.Y();
 
-		// comprobamos que estamosd entro del laberinto
+		// comprobamos que estamos dentro del laberinto
 
 		// queremos movernos a la derecha y en la derecha no tengamos un muro
 		if (posx < maze.size - 1 && maze.cells[posx + 1][posy] != Maze.WALL) {
@@ -128,6 +128,8 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 		// COMPLETAR
 		//
 		// Otherwise returns 0
+		
+		//devolvemos la recompensa si es gato=-100 y si es queso=100 (estados finales).
 		if(maze.cells[posx][posy]==Maze.CAT) {
 			reward=-100;
 			return reward;
@@ -187,6 +189,7 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 		// COMPLETAR
 		//
 		
+		//Añadimos aquellas posiciones del laberinto que no contienen muro, es decir, posibles estados ha alcanzar.
 		for(int i=0; i<maze.size-1;i++) {
 			for(int j=0; i<maze.size-1;j++) {
 				if(maze.cells[i][j]!=Maze.WALL) {
