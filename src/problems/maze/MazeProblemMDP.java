@@ -141,7 +141,7 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 
 	/** In this case, the transition reward penalizes distance. */
 	@Override
-	public double getTransitionReward(State fromState, Action action, State toState) {
+	public double getTransitionReward(State fromState, Action action, State toState) { //recompensa asociada a la transicción T(s,a,s')
 
 		double reward = 0;
 
@@ -150,7 +150,31 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 		//
 
 		// Returns the reward
-		return reward;
+		
+		MazeState mazeState_fromStat = (MazeState)fromState;
+		MazeAction mazeAction = (MazeAction)action;
+		MazeState mazeState_toState = (MazeState)toState;
+		int posx_f = mazeState_fromStat.X();
+		int posy_f = mazeState_fromStat.Y();
+		int posx_to = mazeState_toState.X();
+		int posy_to = mazeState_toState.Y();
+		double dist_eucli = 0;
+		
+		//calculo distancia euclidea
+		
+		dist_eucli = Math.sqrt(Math.pow((posx_to-posx_f), 2)+Math.pow((posy_to-posy_f), 2));
+		reward=  (-1*dist_eucli);
+		
+		if(mazeAction.equals(Maze.HOLE)) { 
+			reward=reward/2;
+			return reward;
+		}
+		if (maze.cells[posx_f][posy_f]==Maze.WATER) {
+			reward = reward*2;
+			return reward;
+		}
+		
+		return reward; 
 	}
 
 	// From MDPLearningProblem
@@ -162,6 +186,15 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 		//
 		// COMPLETAR
 		//
+		
+		for(int i=0; i<maze.size-1;i++) {
+			for(int j=0; i<maze.size-1;j++) {
+				if(maze.cells[i][j]!=Maze.WALL) {
+					allStates.add(new MazeState(i,j));
+				}
+			}
+		}
+		
 		return allStates;
 	}
 
@@ -170,7 +203,9 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 		//
 		// COMPLETAR
 		//
-		return null;
+		
+		return mazeTransitionModel(state, action);
+		
 	}
 
 	/**
@@ -309,7 +344,7 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 		}
 	}
 
-	/* Visualization */
+	/*Visualization */
 
 	/** Returns a panel with the view of the problem. */
 	public ProblemView getView(int sizePx) {
