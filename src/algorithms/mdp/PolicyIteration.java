@@ -1,8 +1,11 @@
 package algorithms.mdp;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import learning.*;
+import utils.Utils;
 
 public class PolicyIteration extends LearningAlgorithm {
 	/** Max delta. Controls convergence.*/
@@ -29,6 +32,22 @@ public class PolicyIteration extends LearningAlgorithm {
 		 // 
 		 //***************************/
 		
+		HashMap<State, Double> utilities = new HashMap<State, Double>();
+		//Política aleatoria
+		for (State state: problem.getAllStates()){	
+			ArrayList<Action> possibleActions = problem.getPossibleActions(state);
+			int selActionIdx = Utils.random.nextInt(possibleActions.size());
+			solution.setAction(state, possibleActions.get(selActionIdx));
+		}
+		
+		
+		do{
+			policyAux=solution;
+			utilities=policyEvaluation(policyAux);
+			solution=policyImprovement(utilities);
+			
+		}while(!solution.equals(policyAux));
+		
 		// Main loop of the policy iteration.
 		 //****************************/
 		 //
@@ -53,6 +72,41 @@ public class PolicyIteration extends LearningAlgorithm {
 		 // 
 		 // 
 		 //***************************/
+		
+		Collection<State> states = problem.getAllStates();	
+		 double delta;
+		 double sumatorio=0;
+
+		 HashMap<State,Double> utilities1 = new HashMap<State,Double>();
+		for(State state : states){
+
+			if(!problem.isFinal(state)){
+				utilities.put(state, 0d);
+			}else{
+				utilities.put(state, problem.getReward(state));
+			}
+			 
+		 }
+		 
+		 do{
+			 delta = 0;
+			 states = problem.getAllStates();
+			 sumatorio = 0;
+			 for (State state : states){
+				 if(!problem.isFinal(state)){
+				 sumatorio=((MDPLearningProblem)problem).getExpectedUtility(state, policy.getAction(state), utilities, problem.gamma);
+					 
+					 utilities1.put(state,sumatorio);
+					 
+					 if(Math.abs(utilities1.get(state)-utilities.get(state))> delta){
+						 delta=Math.abs(utilities1.get(state)-utilities.get(state));
+					 }
+				 
+				 }
+			 }
+			 utilities.putAll(utilities1);
+		 }while(delta>maxDelta*(1-problem.gamma)/problem.gamma);
+		
 		return utilities;
 	}
 
@@ -68,6 +122,28 @@ public class PolicyIteration extends LearningAlgorithm {
 		 // 
 		 // 
 		 //***************************/
+		
+		double sumatorio=0;
+		double max;
+		Action mejor=null;
+		
+		for(State state: problem.getAllStates()){
+			sumatorio=0;
+			max=Double.NEGATIVE_INFINITY;
+			if(!problem.isFinal(state)){
+			for(Action accion: problem.getPossibleActions(state)){
+				sumatorio=((MDPLearningProblem)problem).getExpectedUtility(state, accion, utilities, problem.gamma);
+				if(sumatorio>max){
+					max=sumatorio;
+					mejor=accion;
+				}
+			}
+			newPolicy.setAction(state, mejor);
+			
+			}
+		}	
+		
+		
 		return newPolicy;
 	}
 	

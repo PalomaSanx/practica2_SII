@@ -169,16 +169,16 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 		
 		if(mazeAction.equals(Maze.HOLE)) { 
 			reward=reward/2;
-			System.out.println("Reward Hole:"+reward);
+			//System.out.println("Reward Hole:"+reward);
 			return reward;
 		}
 		if (maze.cells[posx_f][posy_f]==Maze.WATER) {
 			reward = reward*2;
-			System.out.println("Reward Water:"+reward);
+			//System.out.println("Reward Water:"+reward);
 			return reward;
 		}
 		
-		System.out.println("reward:"+reward);
+		//System.out.println("reward:"+reward);
 		return reward; 
 	}
 
