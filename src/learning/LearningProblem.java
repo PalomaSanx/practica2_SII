@@ -73,5 +73,12 @@ public abstract class LearningProblem{
 		}
 		return null;
 	}
+
+	public abstract Collection<State> getAllStates();
+
+	
+
+
+	
 }
 

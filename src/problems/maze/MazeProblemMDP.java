@@ -89,22 +89,22 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 		// comprobamos que estamos dentro del laberinto
 
 		// queremos movernos a la derecha y en la derecha no tengamos un muro
-		if (posx < maze.size - 1 && maze.cells[posx + 1][posy] != Maze.WALL) {
+		if ((posx < (maze.size - 1)) && (maze.cells[posx + 1][posy] != Maze.WALL)) {
 			possibleActions.add(MazeAction.RIGHT);
 		}
 
 		// queremos movernos a la izquierda y en la izquierda no tengamos un muro
-		if (posx > 0 && maze.cells[posx - 1][posy] != Maze.WALL) {
+		if ((posx > 0) && (maze.cells[posx - 1][posy] != Maze.WALL)) {
 			possibleActions.add(MazeAction.LEFT);
 		}
-
+	
 		// queremos movernos hacia arriba y no tengamos un muro
-		if (posy < maze.size - 1 && maze.cells[posx][posy - 1] != Maze.WALL) {
+		if ( (maze.cells[posx][posy - 1] != Maze.WALL)) {
 			possibleActions.add(MazeAction.UP);
 		}
-
+		
 		// queremos movernos hacia abajo y no tengamos un muro
-		if (posy > 0 && maze.cells[posx][posy + 1] != Maze.WALL) {
+		if ((posy > 0) && (maze.cells[posx][posy + 1] != Maze.WALL)) {
 			possibleActions.add(MazeAction.DOWN);
 
 		}
@@ -113,7 +113,7 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 			possibleActions.add(MazeAction.DIVE);
 
 		}
-
+		System.out.println(possibleActions);
 		return possibleActions;
 	}
 
@@ -169,13 +169,16 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 		
 		if(mazeAction.equals(Maze.HOLE)) { 
 			reward=reward/2;
+			System.out.println("Reward Hole:"+reward);
 			return reward;
 		}
 		if (maze.cells[posx_f][posy_f]==Maze.WATER) {
 			reward = reward*2;
+			System.out.println("Reward Water:"+reward);
 			return reward;
 		}
 		
+		System.out.println("reward:"+reward);
 		return reward; 
 	}
 
@@ -190,8 +193,8 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 		//
 		
 		//Añadimos aquellas posiciones del laberinto que no contienen muro, es decir, posibles estados ha alcanzar.
-		for(int i=0; i<maze.size-1;i++) {
-			for(int j=0; i<maze.size-1;j++) {
+		for(int i=0; i<maze.size;i++) {
+			for(int j=0; j<maze.size;j++) {
 				if(maze.cells[i][j]!=Maze.WALL) {
 					allStates.add(new MazeState(i,j));
 				}

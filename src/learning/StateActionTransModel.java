@@ -42,7 +42,7 @@ public class StateActionTransModel{
 		double randUniform = Utils.random.nextDouble();
 		int selected = 0;
 		double cumProbabilities = probs[selected];
-		while (randUniform>cumProbabilities && selected < probs.length){
+		while (randUniform>cumProbabilities ) {//&& selected < probs.length){
 			cumProbabilities += probs[++selected];
 		}		
 		// Returns the corresponding state.

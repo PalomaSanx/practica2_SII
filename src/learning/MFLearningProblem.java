@@ -1,5 +1,7 @@
 package learning;
 
+import java.util.Collection;
+
 /** 
  * This class extends Learning Problem to implement model free problems, where
  * the transition model is not known, the environment can change, and the new 
@@ -30,6 +32,7 @@ public abstract class MFLearningProblem extends LearningProblem {
 	
 	/** Reads the new state*/
 	public abstract State readNewState(State state, Action action);
+	
 	
 }
 	

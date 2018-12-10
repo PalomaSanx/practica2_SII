@@ -274,6 +274,10 @@ public class MazeProblemMF extends MFLearningProblem  implements MazeProblem, Pr
 		//
 		// COMPLETAR
 		// 
+		
+		//NO HACE NADA YA QUE EN ESTE PROBLEMA EL AGENTE NO MODIFICA EL ENTORNO(Environment)
+		
+		
 	}
 	
 	/** Generates the new state. */
@@ -282,7 +286,12 @@ public class MazeProblemMF extends MFLearningProblem  implements MazeProblem, Pr
 		//
 		// COMPLETAR
 		// 
-		return null; // Quitar
+		MazeState stateE = (MazeState)state;
+		MazeAction actionN = (MazeAction)action;
+
+		//se genera el modelo de transicción 
+		StateActionTransModel model = mazeTransitionModel(stateE, actionN); //genera el modelo de transición para ese estado y accion concreta.
+		return model.genNextState(); //sobre el modelo de transición devuelve el nuevo estado.
 	}
 	
 	// Utilities
@@ -352,4 +361,23 @@ public class MazeProblemMF extends MFLearningProblem  implements MazeProblem, Pr
 		System.out.println("Transition reward:"+ mazeProblem.getTransitionReward(currentState, MazeAction.UP, newState));
 	}
 
+	/** Returns a collection with all possible states. */
+	@Override
+	public Collection<State> getAllStates() {
+		ArrayList<State> allStates = new ArrayList<State>();
+		//
+		// COMPLETAR
+		//
+		
+		//Añadimos aquellas posiciones del laberinto que no contienen muro, es decir, posibles estados ha alcanzar.
+		for(int i=0; i<maze.size-1;i++) {
+			for(int j=0; i<maze.size-1;j++) {
+				if(maze.cells[i][j]!=Maze.WALL) {
+					allStates.add(new MazeState(i,j));
+				}
+			}
+		}
+		
+		return allStates;
+	}
 }
