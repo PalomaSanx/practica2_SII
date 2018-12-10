@@ -64,8 +64,8 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 		// COMPLETAR
 		//
 		MazeState mazestate = (MazeState) state;
-		int posx = mazestate.position.x;
-		int posy = mazestate.position.y;
+		int posx = mazestate.X();
+		int posy = mazestate.Y();
 		if (maze.cells[posx][posy] == Maze.CAT || maze.cells[posx][posy] == Maze.CHEESE) {
 			return true;
 		}
@@ -89,7 +89,7 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 		// comprobamos que estamos dentro del laberinto
 
 		// queremos movernos a la derecha y en la derecha no tengamos un muro
-		if ((posx < (maze.size - 1)) && (maze.cells[posx + 1][posy] != Maze.WALL)) {
+		if ((posx < maze.size - 1 ) && (maze.cells[posx + 1][posy] != Maze.WALL)) {
 			possibleActions.add(MazeAction.RIGHT);
 		}
 
@@ -99,12 +99,12 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 		}
 	
 		// queremos movernos hacia arriba y no tengamos un muro
-		if ( (maze.cells[posx][posy - 1] != Maze.WALL)) {
+		if ((posy > 0) && (maze.cells[posx][posy - 1] != Maze.WALL)) {
 			possibleActions.add(MazeAction.UP);
 		}
 		
 		// queremos movernos hacia abajo y no tengamos un muro
-		if ((posy > 0) && (maze.cells[posx][posy + 1] != Maze.WALL)) {
+		if ((posy < maze.size-1) && (maze.cells[posx][posy + 1] != Maze.WALL)) {
 			possibleActions.add(MazeAction.DOWN);
 
 		}
@@ -196,7 +196,7 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 		for(int i=0; i<maze.size;i++) {
 			for(int j=0; j<maze.size;j++) {
 				if(maze.cells[i][j]!=Maze.WALL) {
-					allStates.add(new MazeState(i,j));
+					allStates.add(new MazeState(new Position(i,j)));
 				}
 			}
 		}

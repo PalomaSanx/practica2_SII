@@ -97,6 +97,10 @@ public class ValueIteration extends LearningAlgorithm {
 			
 		}
 		printResults();
+
+		
+		
+	
 	}
 
 	/**
