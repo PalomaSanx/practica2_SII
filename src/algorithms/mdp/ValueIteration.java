@@ -48,15 +48,16 @@ public class ValueIteration extends LearningAlgorithm {
 		double delta = 0.0;
 		Collection<State> estados = problem.getAllStates();
 		double utilidadMax = Double.NEGATIVE_INFINITY;
-		double sumatorio = 0;
-		Action maxAccion = null;
+		double sumatorio = 0; //lo usaremos para sumar las (prob*util).
+		Action maxAccion = null; //accion con la que nos vamos a quedar, para dar el resultado.
 		utilities = new HashMap<State, Double>();
 		utilitiesCurrent = new HashMap<State, Double>();
 
+		//recorremos los estados
 		for (State state : estados) {
 			if (!problem.isFinal(state)) {
 
-				utilities.put(state, 0d);
+				utilities.put(state, 0.0);
 			}else {
 				utilities.put(state, problem.getReward(state));
 			}
