@@ -113,7 +113,7 @@ public class MazeProblemMDP extends MDPLearningProblem implements MazeProblem, P
 			possibleActions.add(MazeAction.DIVE);
 
 		}
-		System.out.println(possibleActions);
+		//System.out.println(possibleActions);
 		return possibleActions;
 	}
 
