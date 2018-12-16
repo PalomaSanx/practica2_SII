@@ -81,22 +81,22 @@ public class MazeProblemMF extends MFLearningProblem  implements MazeProblem, Pr
 		// comprobamos que estamos dentro del laberinto
 
 		// queremos movernos a la derecha y en la derecha no tengamos un muro
-		if (posx < maze.size - 1 && maze.cells[posx + 1][posy] != Maze.WALL) {
+		if ((posx < maze.size - 1 ) && (maze.cells[posx + 1][posy] != Maze.WALL)) {
 			possibleActions.add(MazeAction.RIGHT);
 		}
 
 		// queremos movernos a la izquierda y en la izquierda no tengamos un muro
-		if (posx > 0 && maze.cells[posx - 1][posy] != Maze.WALL) {
+		if ((posx > 0) && (maze.cells[posx - 1][posy] != Maze.WALL)) {
 			possibleActions.add(MazeAction.LEFT);
 		}
-
+	
 		// queremos movernos hacia arriba y no tengamos un muro
-		if (posy < maze.size - 1 && maze.cells[posx][posy - 1] != Maze.WALL) {
+		if ((posy > 0) && (maze.cells[posx][posy - 1] != Maze.WALL)) {
 			possibleActions.add(MazeAction.UP);
 		}
-
+		
 		// queremos movernos hacia abajo y no tengamos un muro
-		if (posy > 0 && maze.cells[posx][posy + 1] != Maze.WALL) {
+		if ((posy < maze.size-1) && (maze.cells[posx][posy + 1] != Maze.WALL)) {
 			possibleActions.add(MazeAction.DOWN);
 
 		}
@@ -105,8 +105,7 @@ public class MazeProblemMF extends MFLearningProblem  implements MazeProblem, Pr
 			possibleActions.add(MazeAction.DIVE);
 
 		}
-
-		// Returns the actions.
+		//System.out.println(possibleActions);
 		return possibleActions;
 		
 	}	
@@ -163,7 +162,7 @@ public class MazeProblemMF extends MFLearningProblem  implements MazeProblem, Pr
 		dist_eucli = Math.sqrt(Math.pow((posx_to-posx_f), 2)+Math.pow((posy_to-posy_f), 2));
 		reward=  (-1*dist_eucli);
 		
-		if(mazeAction.equals(Maze.HOLE)) { 
+		if(mazeAction == MazeAction.DIVE) { 
 			reward=reward/2;
 			return reward;
 		}
@@ -290,7 +289,7 @@ public class MazeProblemMF extends MFLearningProblem  implements MazeProblem, Pr
 		MazeAction actionN = (MazeAction)action;
 
 		//se genera el modelo de transicción 
-		StateActionTransModel model = mazeTransitionModel(stateE, actionN); //genera el modelo de transición para ese estado y accion concreta.
+		StateActionTransModel model = mazeTransitionModel(state, action); //genera el modelo de transición para ese estado y accion concreta.
 		return model.genNextState(); //sobre el modelo de transición devuelve el nuevo estado.
 	}
 	

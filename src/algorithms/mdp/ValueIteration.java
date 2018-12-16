@@ -31,9 +31,11 @@ public class ValueIteration extends LearningAlgorithm {
 	 */
 	@Override
 	protected void learnPolicy() {
+
 		// This algorithm only works for MDPs
 		if (!(problem instanceof MDPLearningProblem)) {
-			System.out.println("The algorithm ValueIteration can not be applied to this problem (model is not visible).");
+			System.out
+					.println("The algorithm ValueIteration can not be applied to this problem (model is not visible).");
 			System.exit(0);
 		}
 
@@ -44,63 +46,70 @@ public class ValueIteration extends LearningAlgorithm {
 		//
 		// ***************************/
 
-		//--- Atributos necesarios ----
-		double delta = 0.0; //cambio + significativo de una iteración a otra.
-		Collection<State> estados = problem.getAllStates(); //estados=todos los estados del problema.
-		double utilidadMax = Double.NEGATIVE_INFINITY; //utilidadMax = - infinito.
-		double sumatorio = 0; //lo usaremos para sumar las (prob*utilidad) desde un estado y accion concreta.
-		Action maxAccion = null; //accion con la que nos vamos a quedar, para dar el resultado.
-		utilities = new HashMap<State, Double>(); //hashmap con utilidades anteriores.
-		utilitiesCurrent = new HashMap<State, Double>(); //hashmap con utilidades actuales.
-		//------ALGORITMO---------------
-		//recorremos los estados si no se ha llegado a un estado final, inicializamos todas las utilidades a 0.
-		//y si es final se añaden las recompensas a al hasMap de utilidades de los estados.
-		for (State state : estados) {
-			if (!problem.isFinal(state)) {
-				utilities.put(state, 0.0);
-			}else {
-				utilities.put(state, problem.getReward(state));
-			}
+		// --- Atributos necesarios ----
+		double delta = 0;
+		double diferencia;
+		utilitiesCurrent = new HashMap<State, Double>();
+		utilities = new HashMap<State, Double>();
+		double utilidadMax = -10000.0;
+		//-----recorremos estado a estado, y comprobamos si es final------//
+		for (State estado : problem.getAllStates()) {
+			if (problem.isFinal(estado)) {
+				utilities.put(estado, problem.getReward(estado));//es final= le damos -100 si es gato o +100 si es queso.
+				System.out.println("getReward->"+problem.getReward(estado));
+			} else
+				utilities.put(estado, new Double(0));
 		}
 
-		while (delta < maxDelta * (1 - problem.gamma) / (problem.gamma)) { //bucle hasta llegar a convergir con maxdelta = 0.01
-			estados = problem.getAllStates();
-			sumatorio=0;
-			
-			for (State state : estados) { //para cada uno de los estados, generamos sus acciones y por cada accion se calcula 
-										//la suma de de las (prob*utilidad anterior para dicho estado) y obtiene
-										//la utilidad y acción maximas.
-				
-				if (!problem.isFinal(state)) {
-					utilidadMax = Double.NEGATIVE_INFINITY;
-					
-					for (Action action : problem.getPossibleActions(state)) {
-						//System.out.println(sumatorio+"  "+utilidadMax);
-						sumatorio = (((MDPLearningProblem) problem).getExpectedUtility(state, action, utilities,
-								problem.gamma));
-						
-						if (sumatorio > utilidadMax) { 
+		System.out.println(((1.0 - problem.gamma) / problem.gamma));
+
+		do {
+			delta = 0;
+			for (State estado : problem.getAllStates()) {
+				if (problem.isFinal(estado)) {
+					utilidadMax = problem.getReward(estado);
+				} else {
+					for (Action accion : problem.getPossibleActions(estado)) {
+						double sumatorio = ((MDPLearningProblem) problem).getExpectedUtility(estado, accion, utilities,
+								problem.gamma);
+
+						if (sumatorio > utilidadMax)
 							utilidadMax = sumatorio;
-							maxAccion = action;
-						}
-						
-
 					}
+				}
+				utilitiesCurrent.put(estado, utilidadMax); // asigna la utilidad a estado.
+				diferencia = utilidadMax - utilities.get(estado); // delta para estado 'x'
 
-					solution.setAction(state, maxAccion); //asignamos la accion maxima que le corresponde al estado 'x'
-					utilitiesCurrent.put(state, utilidadMax); //asignamos en el hashmap de utilidades actuales, a cada estado la utilidad max.
+				if (Math.abs(diferencia) > delta)
+					delta = Math.abs(diferencia);
+				System.out.println("    " + utilities.get(estado) + " pasa a ser " + utilidadMax);
+				System.out.println("Delta = " + delta);
 
-					if (Math.abs(utilitiesCurrent.get(state) - utilities.get(state)) > delta) {
-						delta = Math.abs(utilitiesCurrent.get(state) - utilities.get(state)); //nos quedamos con el mayor factor de cambio en dicha iteración.
-					}
+				utilidadMax = -10000.0;
+			}
+
+			utilities.putAll(utilitiesCurrent);
+
+		} while (delta > (maxDelta * ((1.0 - problem.gamma) / problem.gamma)));
+
+		// Putting the optimal policy.
+		Action best = null;
+		Double max = -10000.0;
+		Double utility;
+
+		for (State estado : problem.getAllStates()) {
+			for (Action accion : problem.getPossibleActions(estado)) {
+				utility = ((MDPLearningProblem) problem).getExpectedUtility(estado, accion, utilities, problem.gamma);
+				if (utility > max) {
+					best = accion;
+					max = utility;
 				}
 			}
 
-			utilities = utilitiesCurrent; //para la ultima iteración, volcamos las ultimas utilidades obtenidas (actualizando el hashmap utilities).
-			
+			solution.setAction(estado, best);
+			max = -10000.0;
 		}
 		printResults();
-	
 	}
 
 	/**

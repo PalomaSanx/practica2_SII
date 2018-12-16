@@ -47,7 +47,7 @@ public class QLearning extends LearningAlgorithm {
 			double Q, reward, maxQ; // Values necessary to update the table.
 
 			// Generates a new initial state.
-			currentState = problem.getRandomState();
+			currentState = problem.getRandomState();//---->Aqui obtenemos un estado inicial aleatorio.
 			// Use fix init point for debugging
 			// currentState = problem.getInitialState();
 
@@ -59,27 +59,43 @@ public class QLearning extends LearningAlgorithm {
 			//
 			//
 			// ***************************/
-
-			while (!problem.isFinal(currentState)) {
-				selAction = qTable.getActionMaxValue(currentState);
-				newState = problem.applyAction(currentState, selAction);
-				reward = problem.getReward(newState) + problem.getTransitionReward(currentState, selAction, newState);
-
+			//----algoritmo----//
+			
+			while (!problem.isFinal(currentState)) { 
+				if (qTable.getActionMaxValue(currentState)==null) {
+					
+					selAction = problem.randomAction(currentState);
+					newState = problem.applyAction(currentState, selAction);
+					
+				} else {
+					
+					selAction = qTable.getActionMaxValue(currentState);
+					newState = problem.applyAction(currentState, selAction);
+				
+				selAction = qTable.getActionMaxValue(currentState); //guardamos la accion con valor máximo.
+				newState = problem.applyAction(currentState, selAction); //se aplica dicha accion al estado actual.
+				
+				}
+				
+				reward = problem.getReward(newState) + problem.getTransitionReward(currentState, selAction, newState); //obtenemos 
 				if (problem.isFinal(newState)) {
 
 					qTable.setQValue(currentState, selAction,
-							(1 - alpha) * qTable.getQValue(currentState, selAction) + alpha * (reward));
+							(1 - alpha) * qTable.getQValue(currentState, selAction) + alpha * (reward)); //se actualiza la Q-Table, si es un estado final no calcula el valor máximo por accion
 				} else {
 
 					qTable.setQValue(currentState, selAction, (1 - alpha) * qTable.getQValue(currentState, selAction)
-							+ alpha * (reward + problem.gamma * qTable.getMaxQValue(newState)));
+							+ alpha * (reward + problem.gamma * qTable.getMaxQValue(newState))); //se actualiza la Q-Table con el valor máximo para la acción 'newState'
 				}
-				currentState = newState;
+				currentState = newState; //actualizamos el estado actual, y volvemos de forma concurrente hasta la siguiente ite(currentState is final).
 			}
 
 		}
 
 		solution = qTable.generatePolicy();
+		printResults();
+		
+		
 	}
 
 	/** Sets the parameters of the algorithm. */

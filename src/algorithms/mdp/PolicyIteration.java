@@ -31,23 +31,17 @@ public class PolicyIteration extends LearningAlgorithm {
 		 // 
 		 // 
 		 //***************************/
-		
+		//--atributos
 		HashMap<State, Double> utilities = new HashMap<State, Double>();
-		//Política aleatoria
+		//---------Establecemos la política aleatoria------------------------//
 		for (State state: problem.getAllStates()){	
-			ArrayList<Action> possibleActions = problem.getPossibleActions(state);
-			int selActionIdx = Utils.random.nextInt(possibleActions.size());
-			solution.setAction(state, possibleActions.get(selActionIdx));
-		}
-		
-		
-		do{
-			policyAux=solution;
-			utilities=policyEvaluation(policyAux);
-			solution=policyImprovement(utilities);
+			ArrayList<Action> possibleActions = problem.getPossibleActions(state); //guarda las posibles acciones para un estado 'x'
 			
-		}while(!solution.equals(policyAux));
-		
+			int idAccion = Utils.random.nextInt(possibleActions.size()); //genera un nº random entre 0 y el nº de acciones de el estado 'x'
+			solution.setAction(state, possibleActions.get(idAccion)); //añadimos la accion con id 'y' a la solución
+
+			
+		}
 		// Main loop of the policy iteration.
 		 //****************************/
 		 //
@@ -55,6 +49,14 @@ public class PolicyIteration extends LearningAlgorithm {
 		 // 
 		 // 
 		 //***************************/
+		
+		do{
+			policyAux=solution; // guardamos la política.(A,B,C..)<--random
+			utilities=policyEvaluation(policyAux); //evaluamos la politica=obtenemos las utilidades de esa política.
+			solution=policyImprovement(utilities);//obtenemos la mejor politica para esas utilidades. (b,c,a).
+		}while(!solution.equals(policyAux));//en cuanto sean iguales las políticas, es decir, ha encontrado la mejor PARAMOS.
+		//(B,C,A != A,B,C)
+		//(a,c,c == A,C,C) para.
 	}
 		
 	
@@ -95,9 +97,7 @@ public class PolicyIteration extends LearningAlgorithm {
 			 for (State state : states){
 				 if(!problem.isFinal(state)){
 				 sumatorio=((MDPLearningProblem)problem).getExpectedUtility(state, policy.getAction(state), utilities, problem.gamma);
-					 
 					 utilities1.put(state,sumatorio);
-					 
 					 if(Math.abs(utilities1.get(state)-utilities.get(state))> delta){
 						 delta=Math.abs(utilities1.get(state)-utilities.get(state));
 					 }
