@@ -42,12 +42,8 @@ public class StateActionTransModel{
 		double randUniform = Utils.random.nextDouble();
 		int selected = 0;
 		double cumProbabilities = probs[selected];
-//		for(int i=0;i<probs.length;i++) {
-//		System.out.println("prob["+i+"]="+probs[i]);
-//		}
-		while (randUniform>cumProbabilities){ // &&(selected) < probs.length
+		while (randUniform>cumProbabilities ) {//&& selected < probs.length){
 			cumProbabilities += probs[++selected];
-			
 		}		
 		// Returns the corresponding state.
 		return reachableStates[selected];

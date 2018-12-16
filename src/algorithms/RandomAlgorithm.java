@@ -6,7 +6,6 @@ import java.util.Collection;
 import utils.Utils;
 import learning.Action;
 import learning.LearningAlgorithm;
-import learning.MDPLearningProblem;
 import learning.State;
 
 /** 
@@ -19,7 +18,7 @@ public class RandomAlgorithm extends LearningAlgorithm{
 	@Override
 	protected void learnPolicy() {
 		// Gets all the states.
-		Collection<State> states = ((MDPLearningProblem)problem).getAllStates();	
+		Collection<State> states = problem.getAllStates();	
 		// Assigns the action to each state.
 		for (State state: states){	
 			// Extracts the possible actions that can be applied to the state.

@@ -52,10 +52,8 @@ public class ValueIteration extends LearningAlgorithm {
 		utilitiesCurrent = new HashMap<State, Double>();
 		utilities = new HashMap<State, Double>();
 		double utilidadMax = -10000.0;
-		double gamma = ((MDPLearningProblem) problem).gamma;
-		
 		//-----recorremos estado a estado, y comprobamos si es final------//
-		for (State estado : ((MDPLearningProblem)problem).getAllStates()) {
+		for (State estado : problem.getAllStates()) {
 			if (problem.isFinal(estado)) {
 				utilities.put(estado, problem.getReward(estado));//es final= le damos -100 si es gato o +100 si es queso.
 				System.out.println("getReward->"+problem.getReward(estado));
@@ -63,18 +61,17 @@ public class ValueIteration extends LearningAlgorithm {
 				utilities.put(estado, new Double(0));
 		}
 
-		System.out.println(((1.0 - gamma) / gamma));
+		System.out.println(((1.0 - problem.gamma) / problem.gamma));
 
 		do {
 			delta = 0;
-			Collection<State> allStates = ((MDPLearningProblem) problem).getAllStates();
-			for (State estado : allStates) {
+			for (State estado : problem.getAllStates()) {
 				if (problem.isFinal(estado)) {
 					utilidadMax = problem.getReward(estado);
 				} else {
 					for (Action accion : problem.getPossibleActions(estado)) {
 						double sumatorio = ((MDPLearningProblem) problem).getExpectedUtility(estado, accion, utilities,
-								gamma);
+								problem.gamma);
 
 						if (sumatorio > utilidadMax)
 							utilidadMax = sumatorio;
@@ -93,16 +90,16 @@ public class ValueIteration extends LearningAlgorithm {
 
 			utilities.putAll(utilitiesCurrent);
 
-		} while (delta >= (maxDelta * ((1.0 - gamma) / gamma)));
+		} while (delta >= (maxDelta * ((1.0 - problem.gamma) / problem.gamma)));
 
 		// Putting the optimal policy.
 		Action best = null;
 		Double max = -10000.0;
 		Double utility;
 
-		for (State estado : ((MDPLearningProblem)problem).getAllStates()) {
+		for (State estado : problem.getAllStates()) {
 			for (Action accion : problem.getPossibleActions(estado)) {
-				utility = ((MDPLearningProblem) problem).getExpectedUtility(estado, accion, utilities, gamma);
+				utility = ((MDPLearningProblem) problem).getExpectedUtility(estado, accion, utilities, problem.gamma);
 				if (utility > max) {
 					best = accion;
 					max = utility;
