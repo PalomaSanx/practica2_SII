@@ -90,7 +90,7 @@ public class ValueIteration extends LearningAlgorithm {
 
 			utilities.putAll(utilitiesCurrent);
 
-		} while (delta > (maxDelta * ((1.0 - problem.gamma) / problem.gamma)));
+		} while (delta >= (maxDelta * ((1.0 - problem.gamma) / problem.gamma)));
 
 		// Putting the optimal policy.
 		Action best = null;

@@ -107,7 +107,7 @@ public class PolicyIteration extends LearningAlgorithm {
 				 }
 			 }
 			 utilities.putAll(utilities1);
-		 }while(delta>maxDelta*(1-problem.gamma)/problem.gamma);
+		 }while(delta>=(maxDelta*(1-problem.gamma)/problem.gamma));
 		
 		return utilities;
 	}
