@@ -163,7 +163,7 @@ public class MazeProblemMF extends MFLearningProblem  implements MazeProblem, Pr
 		reward=  (-1*dist_eucli);
 		
 		if(mazeAction == MazeAction.DIVE) { 
-			reward=reward/2;
+			reward=reward*0.5;
 			return reward;
 		}
 		if (maze.cells[posx_f][posy_f]==Maze.WATER) {

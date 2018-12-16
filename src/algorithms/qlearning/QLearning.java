@@ -47,7 +47,7 @@ public class QLearning extends LearningAlgorithm {
 			double Q, reward, maxQ; // Values necessary to update the table.
 
 			// Generates a new initial state.
-			currentState = problem.getRandomState();//---->Aqui obtenemos un estado inicial aleatorio.
+			currentState = problem.getRandomState();//---->Aqui obtenemos un estado inicial aleatorio.(inicializamos).
 			// Use fix init point for debugging
 			// currentState = problem.getInitialState();
 
@@ -62,22 +62,20 @@ public class QLearning extends LearningAlgorithm {
 			//----algoritmo----//
 			
 			while (!problem.isFinal(currentState)) { 
-				if (qTable.getActionMaxValue(currentState)==null) {
-					
-					selAction = problem.randomAction(currentState);
-					newState = problem.applyAction(currentState, selAction);
-					
+				
+				if (qTable.getActionMaxValue(currentState)==null) { //si la qTabla no tiene valores asignados o no estaba el estado en la tabla.
+					System.out.println(qTable.toString());
+					selAction = problem.randomAction(currentState); //también podríamos coger según un orden como vimos en clase.
+					newState = problem.applyAction(currentState, selAction);				
 				} else {
 					
-					selAction = qTable.getActionMaxValue(currentState);
-					newState = problem.applyAction(currentState, selAction);
-				
 				selAction = qTable.getActionMaxValue(currentState); //guardamos la accion con valor máximo.
 				newState = problem.applyAction(currentState, selAction); //se aplica dicha accion al estado actual.
 				
 				}
 				
 				reward = problem.getReward(newState) + problem.getTransitionReward(currentState, selAction, newState); //obtenemos 
+				
 				if (problem.isFinal(newState)) {
 
 					qTable.setQValue(currentState, selAction,
@@ -87,6 +85,7 @@ public class QLearning extends LearningAlgorithm {
 					qTable.setQValue(currentState, selAction, (1 - alpha) * qTable.getQValue(currentState, selAction)
 							+ alpha * (reward + problem.gamma * qTable.getMaxQValue(newState))); //se actualiza la Q-Table con el valor máximo para la acción 'newState'
 				}
+				
 				currentState = newState; //actualizamos el estado actual, y volvemos de forma concurrente hasta la siguiente ite(currentState is final).
 			}
 

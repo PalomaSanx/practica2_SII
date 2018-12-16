@@ -1,5 +1,6 @@
 package algorithms.mdp;
 
+import java.time.temporal.IsoFields;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,12 +36,13 @@ public class PolicyIteration extends LearningAlgorithm {
 		HashMap<State, Double> utilities = new HashMap<State, Double>();
 		//---------Establecemos la política aleatoria------------------------//
 		for (State state: problem.getAllStates()){	
+			//if(!problem.isFinal(state)) {
 			ArrayList<Action> possibleActions = problem.getPossibleActions(state); //guarda las posibles acciones para un estado 'x'
 			
 			int idAccion = Utils.random.nextInt(possibleActions.size()); //genera un nº random entre 0 y el nº de acciones de el estado 'x'
 			solution.setAction(state, possibleActions.get(idAccion)); //añadimos la accion con id 'y' a la solución
 
-			
+			//}
 		}
 		// Main loop of the policy iteration.
 		 //****************************/
