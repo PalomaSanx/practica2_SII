@@ -52,52 +52,55 @@ public class ValueIteration extends LearningAlgorithm {
 		utilitiesCurrent = new HashMap<State, Double>();
 		utilities = new HashMap<State, Double>();
 		double utilidadMax = -10000.0;
-		//-----recorremos estado a estado, y comprobamos si es final------//
-		for (State estado : problem.getAllStates()) {
+		// -----recorremos estado a estado, y comprobamos si es final------// (0,0,0,0,-100,+100,...,0,0).
+		for (State estado : ((MDPLearningProblem) problem).getAllStates()) {
 			if (problem.isFinal(estado)) {
-				utilities.put(estado, problem.getReward(estado));//es final= le damos -100 si es gato o +100 si es queso.
-				System.out.println("getReward->"+problem.getReward(estado));
+				utilities.put(estado, problem.getReward(estado));// es final= le damos -100 si es gato o +100 si es
+																	// queso.
+				// System.out.println("getReward->"+problem.getReward(estado));
 			} else
-				utilities.put(estado, new Double(0));
+				utilities.put(estado, new Double(0)); // no es final = se incicializa utilidades a 0.
 		}
 
-		System.out.println(((1.0 - problem.gamma) / problem.gamma));
+		// System.out.println(((1.0 - problem.gamma) / problem.gamma));
 
 		do {
 			delta = 0;
-			for (State estado : problem.getAllStates()) {
+			for (State estado : ((MDPLearningProblem) problem).getAllStates()) {
 				if (problem.isFinal(estado)) {
-					utilidadMax = problem.getReward(estado);
+					utilidadMax = problem.getReward(estado); // es final= le damos -100 si es gato o +100 si es queso.
 				} else {
-					for (Action accion : problem.getPossibleActions(estado)) {
+					for (Action accion : problem.getPossibleActions(estado)) {// no es final=obtenemos acciones para el
+																				// estado 'x'
 						double sumatorio = ((MDPLearningProblem) problem).getExpectedUtility(estado, accion, utilities,
-								problem.gamma);
+								problem.gamma); //Calcula la utilidad esperada para un estado-acción dadas las utilidades de todos los estados en el problema.
 
 						if (sumatorio > utilidadMax)
-							utilidadMax = sumatorio;
+							utilidadMax = sumatorio; //se queda con la utilidad max para dicho estado.
 					}
 				}
-				utilitiesCurrent.put(estado, utilidadMax); // asigna la utilidad a estado.
+				utilitiesCurrent.put(estado, utilidadMax); // asigna la utilidad máxima a estado.
 				diferencia = utilidadMax - utilities.get(estado); // delta para estado 'x'
 
-				if (Math.abs(diferencia) > delta)
+				if (Math.abs(diferencia) > delta) //se actualiza delta para un estado 'x'.
 					delta = Math.abs(diferencia);
-				System.out.println("    " + utilities.get(estado) + " pasa a ser " + utilidadMax);
-				System.out.println("Delta = " + delta);
+				// System.out.println(" " + utilities.get(estado) + " pasa a ser " +
+				// utilidadMax);
+				// System.out.println("Delta = " + delta);
 
 				utilidadMax = -10000.0;
 			}
 
-			utilities.putAll(utilitiesCurrent);
+			utilities.putAll(utilitiesCurrent); // vuelcas utilitiesCurrent en utilities y repites el proceso si no se a alcanzado la convergencia.
 
-		} while (delta >= (maxDelta * ((1.0 - problem.gamma) / problem.gamma)));
+		} while (delta > (maxDelta * ((1.0 - problem.gamma) / problem.gamma))); // se alcance el error mínimo.
 
-		// Putting the optimal policy.
 		Action best = null;
 		Double max = -10000.0;
 		Double utility;
-
-		for (State estado : problem.getAllStates()) {
+		//Aquí ya tenemos las utilities de los estados, ahora falta obtener la politica optima (A,C,D,A...).
+		// BASICAMENTE OBTENEMOS LA MEJOR UTILIDAD PARA EL ESTADO, CON LA MEJOR ACCION.
+		for (State estado : ((MDPLearningProblem) problem).getAllStates()) {
 			for (Action accion : problem.getPossibleActions(estado)) {
 				utility = ((MDPLearningProblem) problem).getExpectedUtility(estado, accion, utilities, problem.gamma);
 				if (utility > max) {
@@ -106,7 +109,7 @@ public class ValueIteration extends LearningAlgorithm {
 				}
 			}
 
-			solution.setAction(estado, best);
+			solution.setAction(estado, best); //politica optima
 			max = -10000.0;
 		}
 		printResults();

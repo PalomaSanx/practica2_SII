@@ -64,7 +64,7 @@ public class QLearning extends LearningAlgorithm {
 			while (!problem.isFinal(currentState)) { 
 				
 				if (qTable.getActionMaxValue(currentState)==null) { //si la qTabla no tiene valores asignados o no estaba el estado en la tabla.
-					System.out.println(qTable.toString());
+					//System.out.println(qTable.toString());
 					selAction = problem.randomAction(currentState); //también podríamos coger según un orden como vimos en clase.
 					newState = problem.applyAction(currentState, selAction);				
 				} else {
@@ -74,7 +74,7 @@ public class QLearning extends LearningAlgorithm {
 				
 				}
 				
-				reward = problem.getReward(newState) + problem.getTransitionReward(currentState, selAction, newState); //obtenemos 
+				reward = problem.getReward(newState) + problem.getTransitionReward(currentState, selAction, newState); //obtenemos la recompensa (si hay queso/gato + paso por agua/tunel)
 				
 				if (problem.isFinal(newState)) {
 
@@ -91,7 +91,7 @@ public class QLearning extends LearningAlgorithm {
 
 		}
 
-		solution = qTable.generatePolicy();
+		solution = qTable.generatePolicy(); //por cada uno de los estados de la tabla obtiene aquella acción cuyo valor sea mayor.(devuelve Policy (HashMap (estado,accion)).
 		printResults();
 		
 		
